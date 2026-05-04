@@ -1,5 +1,6 @@
 import { GoogleGenAI } from "@google/genai";
 import { NextResponse } from "next/server";
+import { createClient } from "@supabase/supabase-js";
 
 // Inicializar el cliente de Gemini usando la nueva librería oficial
 const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
@@ -24,13 +25,41 @@ export async function POST(req: Request) {
   try {
     const { history, message } = await req.json();
 
-    // Construir el array de contenidos para la API
+    // 1. Interceptar si hay un correo electrónico en el mensaje
+    const emailMatch = message.match(/[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/);
+    if (emailMatch) {
+      const email = emailMatch[0];
+      
+      // Inicializar Supabase para guardar el lead
+      if (process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY) {
+        const supabase = createClient(
+          process.env.NEXT_PUBLIC_SUPABASE_URL,
+          process.env.SUPABASE_SERVICE_ROLE_KEY
+        );
+        
+        // Insertar el correo y el historial en la base de datos
+        const { error } = await supabase.from('leads').insert([
+          { 
+            email: email, 
+            chat_history: history 
+          }
+        ]);
+        
+        if (error) console.error("Error guardando en Supabase:", error);
+      }
+
+      // Devolver la respuesta final sin hacer llamada a Gemini (ahorra tiempo y tokens)
+      return NextResponse.json({ 
+        reply: "DATOS RECIBIDOS. INICIANDO PROTOCOLO DE CONTACTO. TRANSMISIÓN FINALIZADA." 
+      });
+    }
+
+    // 2. Si no hay correo, seguir el flujo normal de Gemini
     const contents = history.map((h: any) => ({
       role: h.role === "user" ? "user" : "model",
       parts: [{ text: h.text }]
     }));
 
-    // Añadir el nuevo mensaje del usuario
     contents.push({
       role: "user",
       parts: [{ text: message }]
@@ -41,7 +70,7 @@ export async function POST(req: Request) {
       contents: contents,
       config: {
         systemInstruction: SYSTEM_PROMPT,
-        temperature: 0.5, // Baja temperatura para respuestas más analíticas
+        temperature: 0.5,
       }
     });
 
