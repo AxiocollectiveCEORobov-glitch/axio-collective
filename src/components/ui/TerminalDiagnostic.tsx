@@ -55,7 +55,7 @@ export default function TerminalDiagnostic() {
   };
 
   return (
-    <div className="w-full max-w-4xl mx-auto my-32 relative reveal">
+    <div className="w-full max-w-4xl mx-auto my-32 relative">
       {/* Glow background */}
       <div className="absolute -inset-1 bg-gradient-to-r from-[#FF5722] to-[#0064FF] opacity-20 blur-xl"></div>
       
