@@ -8,7 +8,7 @@ import { motion } from "framer-motion-3d";
 import { useScroll, useTransform } from "framer-motion";
 
 function CoreModel() {
-  const groupRef = useRef<THREE.Group>(null);
+  const groupRef = useRef<any>(null);
   const { scrollY } = useScroll();
 
   // Despiece (Exploded View) baseado en scroll
@@ -38,30 +38,30 @@ function CoreModel() {
         </mesh>
 
         {/* Anillo Exterior 1 */}
-        <motion.mesh y={separation}>
+        <motion.mesh position-y={separation}>
           <torusGeometry args={[1.5, 0.05, 16, 100]} />
           <meshStandardMaterial color="#A8A8C0" metalness={0.8} roughness={0.2} />
         </motion.mesh>
 
         {/* Anillo Exterior 2 (Rotado) */}
-        <motion.mesh y={useTransform(separation, (v) => -v)} rotation-x={Math.PI / 2}>
+        <motion.mesh position-y={useTransform(separation, (v) => -v)} rotation-x={Math.PI / 2}>
           <torusGeometry args={[1.8, 0.02, 16, 100]} />
           <meshBasicMaterial color="#FF5722" />
         </motion.mesh>
 
         {/* Estructuras de Datos Superiores */}
-        <motion.mesh y={useTransform(separation, (v) => v * 1.5)}>
+        <motion.mesh position-y={useTransform(separation, (v) => v * 1.5)}>
           <boxGeometry args={[0.5, 0.5, 0.5]} />
           <meshStandardMaterial color="#1E1E2A" metalness={0.9} roughness={0.1} />
           <Wireframe thickness={0.02} stroke={"#FF5722"} />
         </motion.mesh>
-        <motion.mesh y={useTransform(separation, (v) => v * 2.2)} scale={0.5}>
+        <motion.mesh position-y={useTransform(separation, (v) => v * 2.2)} scale={0.5}>
           <boxGeometry args={[0.5, 0.5, 0.5]} />
           <meshBasicMaterial color="#3A3A50" wireframe />
         </motion.mesh>
 
         {/* Estructuras de Datos Inferiores */}
-        <motion.mesh y={useTransform(separation, (v) => -v * 1.5)}>
+        <motion.mesh position-y={useTransform(separation, (v) => -v * 1.5)}>
           <cylinderGeometry args={[0.3, 0.3, 0.8, 6]} />
           <meshStandardMaterial color="#1E1E2A" metalness={0.9} roughness={0.1} />
           <Wireframe thickness={0.02} stroke={"#0064FF"} />
