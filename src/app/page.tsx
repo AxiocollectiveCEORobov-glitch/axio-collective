@@ -8,6 +8,7 @@ import Diferenciador from "@/components/sections/Diferenciador";
 import { Casos } from "@/components/sections/Casos";
 import Proceso from "@/components/sections/Proceso";
 import FiltroClientes from "@/components/sections/FiltroClientes";
+import TerminalDiagnostic from "@/components/ui/TerminalDiagnostic";
 import CTA from "@/components/sections/CTA";
 import Footer from "@/components/sections/Footer";
 
@@ -24,6 +25,7 @@ export default function Page() {
       <Casos />
       <Proceso />
       <FiltroClientes />
+      <TerminalDiagnostic />
       <CTA />
       <Footer />
     </main>
